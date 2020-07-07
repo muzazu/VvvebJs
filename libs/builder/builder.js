@@ -788,8 +788,8 @@ Vvveb.Builder = {
 
         self._initHighlight();
 
-		// add listener for unde / restore
-		// reload filemanager on add / restore
+        // add listener for unde / restore
+        // reload filemanager on add / restore
         self.frameBody.on("vvveb.undo.add vvveb.undo.restore", function (e) {
             setTimeout(() => {
                 Vvveb.FileManager.loadComponents();
@@ -1930,6 +1930,9 @@ Vvveb.FileManager = {
         var html = drawComponentsTree(tree);
         var j = 0;
 
+        // load component indicator
+        this.loadingComponents = true;
+
         function drawComponentsTree(tree) {
             var html = $("<ol></ol>");
             j++;
@@ -1983,6 +1986,8 @@ Vvveb.FileManager = {
         $("[data-page='" + this.currentPage + "'] > ol", this.tree).replaceWith(
             html
         );
+
+        this.loadingComponents = false;
     },
 
     getCurrentUrl: function () {
@@ -2016,8 +2021,9 @@ Vvveb.FileManager = {
         scroll.scrollTop(scroll.prop("scrollHeight"));
     },
 
-	// handle highlight from selected element
+    // handle highlight from selected element
     highlightComponent: function (component) {
+        if (this.loadingComponents) return false;
         const nodeLi = $("#filemanager .tree > ol").find("li[data-component]");
         nodeLi.each((nl) => {
             if (nodeLi[nl]) {
